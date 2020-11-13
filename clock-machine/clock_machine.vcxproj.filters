@@ -18,13 +18,13 @@
     <ClCompile Include="shprogram.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="101.-mechanizm-zegara.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="gl_05.frag" />
-    <None Include="gl_05.vert" />
+    <None Include="clock_machine.frag" />
+    <None Include="clock_machine.vert" />
+    <None Include="clock_machine.cpp">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="iipw.png">

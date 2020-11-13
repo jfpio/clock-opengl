@@ -87,7 +87,7 @@ int main()
 		cout << "Max texture coords allowed: " << nrAttributes << std::endl;
 
 		// Build, compile and link shader program
-		ShaderProgram theProgram("gl_05.vert", "gl_05.frag");
+		ShaderProgram theProgram("clock_machine.vert", "clock_machine.frag");
 
 		// Set up vertex data 
 		GLfloat vertices[] = {
