@@ -86,10 +86,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="clock_machine.cpp" />
+    <ClCompile Include="cube.cpp" />
+    <ClCompile Include="mesh.cpp" />
     <ClCompile Include="shprogram.cpp" />
+    <ClCompile Include="cylinder.cpp" />
+    <ClCompile Include="vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="clock_machine.cpp" />
     <None Include="clock_machine.frag" />
     <None Include="clock_machine.vert" />
   </ItemGroup>
@@ -98,7 +101,11 @@
     <Image Include="weiti.png" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cube.h" />
+    <ClInclude Include="mesh.h" />
     <ClInclude Include="shprogram.h" />
+    <ClInclude Include="cylinder.h" />
+    <ClInclude Include="vertex.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

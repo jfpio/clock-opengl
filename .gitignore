@@ -1,3 +1,4 @@
 .vs
 Debug
 clock-machine/Debug
+/clock-machine/Release/clock_machine.tlog
