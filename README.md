@@ -18,13 +18,18 @@ Członkowie zespołu:
 
 ## Milestones
 
-1. Założenie projektu oraz podział prac.
-2. Wstępnie teksturowany model zegara wraz z podstawową obsługą kamery i świateł.
-3. Implementacja elementów interaktywnych.
-4. Dodanie otoczenia.
-5. Dopracowanie tekstur, oświetlenia oraz kamer.
-6. Uzupełnienie sceny zewnętrznymi modelami
-
+* Założenie projektu oraz podział prac
+* Rysowanie prymitywów.
+* Bryła zegara
+* Wskazówki i detale zegara 
+* Teskturowanie elementów zegara
+* Ruch kamery (dookoła, przybliżanie)
+* Implementacja elementów interaktywnych
+* Dodanie otoczenia
+* Dopracowanie tekstur
+* Dopracowanie oświetlenia
+* Dopracowanie kamer
+* Uzupełnienie sceny zewnętrznymi modelami
 
 
 ## Szkic modelowanego obiektu
