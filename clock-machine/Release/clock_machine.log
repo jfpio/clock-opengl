@@ -1,0 +1,10 @@
+﻿  clock_machine.cpp
+c:\users\user\source\repos\101.-mechanizm-zegara\clock-machine\clock_machine.cpp(2): fatal error C1083: Cannot open include file: 'GL/glew.h': No such file or directory
+  cube.cpp
+c:\users\user\source\repos\101.-mechanizm-zegara\clock-machine\vertex.h(3): fatal error C1083: Cannot open include file: 'glm/vec2.hpp': No such file or directory
+  mesh.cpp
+c:\users\user\source\repos\101.-mechanizm-zegara\clock-machine\vertex.h(3): fatal error C1083: Cannot open include file: 'glm/vec2.hpp': No such file or directory
+  shprogram.cpp
+c:\users\user\source\repos\101.-mechanizm-zegara\clock-machine\shprogram.cpp(8): fatal error C1083: Cannot open include file: 'GL/glew.h': No such file or directory
+  vertex.cpp
+c:\users\user\source\repos\101.-mechanizm-zegara\clock-machine\vertex.h(3): fatal error C1083: Cannot open include file: 'glm/vec2.hpp': No such file or directory
