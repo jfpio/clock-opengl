@@ -88,10 +88,10 @@ int main()
 		// Build, compile and link shader program
 		ShaderProgram theProgram("clock_machine.vert", "clock_machine.frag");
 
-		//create mesh
-		//Mesh *cube = new Cube();
-		//cube->init();
-		Mesh *cylider = new Cylinder();
+		// Create mesh
+		Mesh *cube = new Cube();
+		cube->init();
+		Mesh *cylider = new Cylinder(12, 0.25, 0.4);
 		cylider->init();
 
 
@@ -127,7 +127,7 @@ int main()
 			
 			glm::mat4 trans;
 			static GLfloat rot_angle = 0.0f;
-			trans = glm::rotate(trans, -glm::radians(rot_angle), glm::vec3(1.0, 0.0, 0.0));
+			trans = glm::rotate(trans, -glm::radians(rot_angle), glm::vec3(1.0, 0.2, 0.0));
 			rot_angle += 0.02f;
 			if (rot_angle >= 360.0f)
 				rot_angle -= 360.0f;
@@ -136,8 +136,8 @@ int main()
 
 			theProgram.Use();
 
-			//draw object
-			//cube->draw();
+			// Draw objects
+			// cube->draw();
 			cylider->draw();
 
 
