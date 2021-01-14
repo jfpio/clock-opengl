@@ -85,7 +85,7 @@ int main()
 		// Create mesh
 		Mesh *cube = new Cube();
 		cube->init();
-		Mesh *cylider = new Cylinder(12, 0.25, 0.4);
+		Mesh *cylider = new Cylinder(12, 0.5, 0.8);
 		cylider->init();
 
 
@@ -144,16 +144,28 @@ int main()
 			glm::mat4 model = glm::mat4(1.0f);
 			
 			// Ustawiamy obiekt
-			model = glm::translate(model, glm::vec3(1.0f, -0.4f, -1.0f));
+			model = glm::translate(model, glm::vec3(0.0f, 0.5f, -1.0f));
 
 			// Obracamy
 			model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
 			// Skalujemy
-			model = glm::scale(model, glm::vec3(0.5, 0.5, 0.5));
+			model = glm::scale(model, glm::vec3(1.0, 1.0, 1.0));
 			theProgram.setMat4("model", model);
 
 			cylider->draw();
+
+			// Ustawiamy obiekt i wymiarujemy go. Warto rozwa¿yæ, ¿eby przenieœæ to do jakiejœ klasy, opakowaæ to
+			model = glm::mat4(1.0f);
+
+			// Ustawiamy obiekt
+			model = glm::translate(model, glm::vec3(0.0f, -0.5f, -1.0f));
+
+			// Skalujemy
+			model = glm::scale(model, glm::vec3(1.0, 1.0, 1.0));
+			theProgram.setMat4("model", model);
+
+			cube->draw();
 
 
 			// Swap the screen buffers
