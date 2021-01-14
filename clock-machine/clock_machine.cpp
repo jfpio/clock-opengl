@@ -6,14 +6,13 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <learnopengl/camera.h>
 #include "shprogram.h"
 #include "mesh.h"
 #include "cube.h"
 #include "cylinder.h"
 
 using namespace std;
-
-const GLuint WIDTH = 800, HEIGHT = 600;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
@@ -22,35 +21,25 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
-GLuint LoadMipmapTexture(GLuint texId, const char* fname)
-{
-	int width, height;
-	unsigned char* image = SOIL_load_image(fname, &width, &height, 0, SOIL_LOAD_RGB);
-	if (image == nullptr)
-		throw exception("Failed to load texture file");
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+void processInput(GLFWwindow* window);
+GLuint LoadMipmapTexture(GLuint texId, const char* fname);
 
-	GLuint texture;
-	glGenTextures(1, &texture);
+// settings
+const GLuint WIDTH = 800, HEIGHT = 600;
 
-	glActiveTexture(texId);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-	glGenerateMipmap(GL_TEXTURE_2D);
-	SOIL_free_image_data(image);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	return texture;
-}
+// camera
+Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+float lastX = WIDTH / 2.0f;
+float lastY = HEIGHT / 2.0f;
+bool firstMouse = true;
 
-ostream& operator<<(ostream& os, const glm::mat4& mx)
-{
-	for (int row = 0; row < 4; ++row)
-	{
-		for (int col = 0; col < 4; ++col)
-			cout << mx[row][col] << ' ';
-		cout << endl;
-	}
-	return os;
-}
+// timing
+float deltaTime = 0.0f;	// time between current frame and last frame
+float lastFrame = 0.0f;
+
 
 int main()
 {
@@ -70,11 +59,16 @@ int main()
 		if (window == nullptr)
 			throw exception("GLFW window not created");
 		glfwMakeContextCurrent(window);
-		glfwSetKeyCallback(window, key_callback);
+		glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+		glfwSetCursorPosCallback(window, mouse_callback);
+		glfwSetScrollCallback(window, scroll_callback);
 
 		glewExperimental = GL_TRUE;
 		if (glewInit() != GLEW_OK)
 			throw exception("GLEW Initialization failed");
+
+		// tell GLFW to capture our mouse
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 		glViewport(0, 0, WIDTH, HEIGHT);
 
@@ -110,8 +104,14 @@ int main()
 		// main event loop
 		while (!glfwWindowShouldClose(window))
 		{
-			// Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
-			glfwPollEvents();
+			// per-frame time logic
+			float currentFrame = glfwGetTime();
+			deltaTime = currentFrame - lastFrame;
+			lastFrame = currentFrame;
+
+			// input
+			// -----
+			processInput(window);
 
 			// Clear the colorbuffer
 			glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
@@ -127,11 +127,13 @@ int main()
 			
 			theProgram.Use();
 
-			// Create transformations
-			glm::mat4 view = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-			glm::mat4 projection = glm::mat4(1.0f);
-			projection = glm::perspective(glm::radians(45.0f), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
-			view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+			// pass projection matrix to shader (note that in this case it could change every frame)
+			glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
+			theProgram.setMat4("projection", projection);
+
+			// camera/view transformation
+			glm::mat4 view = camera.GetViewMatrix();
+			theProgram.setMat4("view", view);
 
 
 			// Pass transformation matrices to the shader
@@ -156,6 +158,7 @@ int main()
 
 			// Swap the screen buffers
 			glfwSwapBuffers(window);
+			glfwPollEvents();
 		}
 	}
 	catch (exception ex)
@@ -168,3 +171,74 @@ int main()
 }
 
 
+GLuint LoadMipmapTexture(GLuint texId, const char* fname)
+{
+	int width, height;
+	unsigned char* image = SOIL_load_image(fname, &width, &height, 0, SOIL_LOAD_RGB);
+	if (image == nullptr)
+		throw exception("Failed to load texture file");
+
+	GLuint texture;
+	glGenTextures(1, &texture);
+
+	glActiveTexture(texId);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	SOIL_free_image_data(image);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	return texture;
+}
+// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
+// ---------------------------------------------------------------------------------------------------------
+void processInput(GLFWwindow* window)
+{
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, true);
+
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		camera.ProcessKeyboard(FORWARD, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		camera.ProcessKeyboard(BACKWARD, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		camera.ProcessKeyboard(LEFT, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		camera.ProcessKeyboard(RIGHT, deltaTime);
+}
+
+// glfw: whenever the window size changed (by OS or user resize) this callback function executes
+// ---------------------------------------------------------------------------------------------
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+	// make sure the viewport matches the new window dimensions; note that width and 
+	// height will be significantly larger than specified on retina displays.
+	glViewport(0, 0, width, height);
+}
+
+
+// glfw: whenever the mouse moves, this callback is called
+// -------------------------------------------------------
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+	if (firstMouse)
+	{
+		lastX = xpos;
+		lastY = ypos;
+		firstMouse = false;
+	}
+
+	float xoffset = xpos - lastX;
+	float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+
+	lastX = xpos;
+	lastY = ypos;
+
+	camera.ProcessMouseMovement(xoffset, yoffset);
+}
+
+// glfw: whenever the mouse scroll wheel scrolls, this callback is called
+// ----------------------------------------------------------------------
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	camera.ProcessMouseScroll(yoffset);
+}
