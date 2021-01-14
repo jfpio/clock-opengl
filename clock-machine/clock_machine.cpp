@@ -125,19 +125,32 @@ int main()
 			glBindTexture(GL_TEXTURE_2D, texture1);
 			glUniform1i(glGetUniformLocation(theProgram.get_programID(), "Texture1"), 0);
 			
-			glm::mat4 trans;
-			static GLfloat rot_angle = 0.0f;
-			trans = glm::rotate(trans, -glm::radians(rot_angle), glm::vec3(1.0, 0.2, 0.0));
-			rot_angle += 0.02f;
-			if (rot_angle >= 360.0f)
-				rot_angle -= 360.0f;
-			GLuint transformLoc = glGetUniformLocation(theProgram.get_programID(), "transform");
-			glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
-
 			theProgram.Use();
 
-			// Draw objects
-			// cube->draw();
+			// Create transformations
+			glm::mat4 view = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+			glm::mat4 projection = glm::mat4(1.0f);
+			projection = glm::perspective(glm::radians(45.0f), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
+			view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+
+
+			// Pass transformation matrices to the shader
+			theProgram.setMat4("projection", projection); // note: currently we set the projection matrix each frame, but since the projection matrix rarely changes it's often best practice to set it outside the main loop only once.
+			theProgram.setMat4("view", view);
+
+			// Ustawiamy obiekt i wymiarujemy go. Warto rozwa¿yæ, ¿eby przenieœæ to do jakiejœ klasy, opakowaæ to
+			glm::mat4 model = glm::mat4(1.0f);
+			
+			// Ustawiamy obiekt
+			model = glm::translate(model, glm::vec3(1.0f, -0.4f, -1.0f));
+
+			// Obracamy
+			model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
+			// Skalujemy
+			model = glm::scale(model, glm::vec3(0.5, 0.5, 0.5));
+			theProgram.setMat4("model", model);
+
 			cylider->draw();
 
 
