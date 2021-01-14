@@ -8,11 +8,11 @@ void Cylinder::setVertices(std::vector<Vertex> &vertices, std::vector<GLuint> &i
 	genIndices(indices);
 }
 
-Cylinder::Cylinder()
+Cylinder::Cylinder(int _slices, float _radius, float _height)
 {
-	slices = 12;
-	radius = 0.25;
-	height = 1.0;
+	slices = _slices;
+	radius = _radius;
+	height = _height;
 }
 
 

@@ -50,6 +50,7 @@ ShaderProgram::ShaderProgram(const GLchar* vertexPath, const GLchar* fragmentPat
 
 	// link shader program
 	program_id = glCreateProgram();
+	ID = program_id;
 	glAttachShader(program_id, vertex_id);
 	glAttachShader(program_id, fragment_id);
 	glLinkProgram(program_id);
