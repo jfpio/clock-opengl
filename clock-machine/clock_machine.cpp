@@ -67,6 +67,7 @@ int main()
 		if (glewInit() != GLEW_OK)
 			throw exception("GLEW Initialization failed");
 
+		glEnable(GL_DEPTH_TEST);
 		// tell GLFW to capture our mouse
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -115,7 +116,7 @@ int main()
 
 			// Clear the colorbuffer
 			glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			
 			// Bind Textures using texture units
 			glActiveTexture(GL_TEXTURE0);
