@@ -11,6 +11,9 @@
 #include "mesh.h"
 #include "cube.h"
 #include "cylinder.h"
+#include "cover.h"
+#include "cuboid.h"
+#include "trans.h"
 
 using namespace std;
 
@@ -82,12 +85,21 @@ int main()
 
 		// Build, compile and link shader program
 		ShaderProgram theProgram("clock_machine.vert", "clock_machine.frag");
-
+		
 		// Create mesh
 		Mesh *cube = new Cube();
 		cube->init();
-		Mesh *cylider = new Cylinder(12, 0.5, 0.8);
+		Mesh *cylider = new Cylinder(12, 0.45, 0.55, 0);
 		cylider->init();
+		Mesh *cover = new Cover(24, 0.5, 0.6, 0.05);
+		cover->init();
+
+		Mesh *pointer = new Cuboid();
+		pointer->init();
+
+		Mesh *bell = new Cylinder(36, 0.2, 0.15, 1);
+		bell->init();
+
 
 
 		// Set the texture wrapping parameters
@@ -141,31 +153,77 @@ int main()
 			theProgram.setMat4("projection", projection); // note: currently we set the projection matrix each frame, but since the projection matrix rarely changes it's often best practice to set it outside the main loop only once.
 			theProgram.setMat4("view", view);
 
-			// Ustawiamy obiekt i wymiarujemy go. Warto rozwa¿yæ, ¿eby przenieœæ to do jakiejœ klasy, opakowaæ to
+			// Ustawienie i rysowanie obudowy
+			Trans tranformation;
 			glm::mat4 model = glm::mat4(1.0f);
 			
 			// Ustawiamy obiekt
-			model = glm::translate(model, glm::vec3(0.0f, 0.5f, -1.0f));
-
+			tranformation.translate(model, 0, 0.5, -0.5);
 			// Obracamy
-			model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-
+			tranformation.rotate(model, 1, 0, 0, 90);
 			// Skalujemy
-			model = glm::scale(model, glm::vec3(1.0, 1.0, 1.0));
-			theProgram.setMat4("model", model);
+			tranformation.scale(model, 1, 1, 1);
 
+			theProgram.setMat4("model", model);
+			cover->draw();
+
+			//ustawienie i rysowanie cyferblatu
+			model = glm::mat4(1.0f);
+			
+			tranformation.translate(model, 0, 0.5, -0.5);
+			tranformation.rotate(model, 1, 0, 0, 90);
+			tranformation.scale(model, 1, 1, 1);
+
+			theProgram.setMat4("model", model);
 			cylider->draw();
 
-			// Ustawiamy obiekt i wymiarujemy go. Warto rozwa¿yæ, ¿eby przenieœæ to do jakiejœ klasy, opakowaæ to
+			//ustawienie i rysowanie wskazowki 1
 			model = glm::mat4(1.0f);
 
-			// Ustawiamy obiekt
-			model = glm::translate(model, glm::vec3(0.0f, -0.5f, -1.0f));
+			tranformation.translate(model, 0, 0.5, -0.2);
+			//tranformation.rotate(model, 1, 0, 0, 90);
+			tranformation.scale(model, 0.8, 0.8, 0.8);
 
-			// Skalujemy
-			model = glm::scale(model, glm::vec3(1.0, 1.0, 1.0));
 			theProgram.setMat4("model", model);
+			pointer->draw();
 
+			//ustawienie i rysowanie wskazowki 2
+			model = glm::mat4(1.0f);
+
+			tranformation.translate(model, 0, 0.5, -0.2);
+			tranformation.rotate(model, 0, 0, 1, -90);
+			tranformation.scale(model, 0.5, 0.5, 0.5);
+
+			theProgram.setMat4("model", model);
+			pointer->draw();
+
+			//ustawienie i rysowanie dzwonka
+			model = glm::mat4(1.0f);
+
+			tranformation.translate(model, 0.25, 1, -0.5);
+			tranformation.rotate(model, 0, 0, 1, -30);
+			tranformation.scale(model, 1, 1, 1);
+
+			theProgram.setMat4("model", model);
+			bell->draw();
+
+			//ustawienie i rysowanie dzwonka 2
+			model = glm::mat4(1.0f);
+
+			tranformation.translate(model, -0.25, 1, -0.5);
+			tranformation.rotate(model, 0, 0, 1, 30);
+			tranformation.scale(model, 1, 1, 1);
+
+			theProgram.setMat4("model", model);
+			bell->draw();
+
+			//ustawienie i rysowanie szafki
+			model = glm::mat4(1.0f);
+
+			tranformation.translate(model, 0, -0.5, -0.5);
+			tranformation.scale(model, 1, 1, 1);
+
+			theProgram.setMat4("model", model);
 			cube->draw();
 
 
