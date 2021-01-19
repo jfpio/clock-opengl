@@ -2,6 +2,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <SOIL.h>
+#include <stb_image.h>
 #include <iostream>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -29,6 +30,7 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos);
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
 GLuint LoadMipmapTexture(GLuint texId, const char *fname);
+unsigned int loadCubemap(vector<std::string> faces);
 
 // settings
 const GLuint WIDTH = 800, HEIGHT = 600;
@@ -84,18 +86,15 @@ int main()
 
 		// Build, compile and link shader program
 		ShaderProgram theProgram("clock_machine.vert", "clock_machine.frag");
-
-		// Set the texture wrapping parameters
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // Set texture wrapping to GL_REPEAT (usually basic wrapping method)
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		// Set texture filtering parameters
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		ShaderProgram skyboxShader("skybox.vert", "skybox.frag");
 
 		// Create mesh
 		Mesh *cube = new Cube();
 		cube->init();
 		cube->loadTexture("wood.png");
+
+		Mesh *skybox = new Cube();
+		skybox->init();
 
 		Mesh *cylinder = new Cylinder(12, 0.45, 0.55, 0);
 		cylinder->init();
@@ -113,6 +112,21 @@ int main()
 
 		Mesh *floor = new Cube();
 		floor->init();
+
+		vector<std::string> faces{
+			"right.jpg",
+			"left.jpg",
+			"top.jpg",
+			"bottom.jpg",
+			"front.jpg",
+			"back.jpg"};
+		unsigned int cubemapTexture = loadCubemap(faces);
+
+		// shader configuration
+		// --------------------
+
+		skyboxShader.use();
+		skyboxShader.setInt("skybox", 0);
 
 		// main event loop
 		while (!glfwWindowShouldClose(window))
@@ -215,7 +229,7 @@ int main()
 			theProgram.setMat4("model", model);
 			cube->draw();
 
-			// Ustawienie i rysowanie pod�ogi
+			// Ustawienie i rysowanie podłogi
 			model = glm::mat4(1.0f);
 
 			tranformation.translate(model, 0, -1.5, -1.5);
@@ -230,6 +244,19 @@ int main()
 			tranformation.scale(model, 100, 1, 100);
 			theProgram.setMat4("model", model);
 			floor->draw();
+
+			// draw skybox as last
+			glDepthFunc(GL_LEQUAL); // change depth function so depth test passes when values are equal to depth buffer's content
+			skyboxShader.use();
+			view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
+			skyboxShader.setMat4("view", view);
+			skyboxShader.setMat4("projection", projection);
+
+			// skybox cube
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+			skybox->draw();
+			glDepthFunc(GL_LESS); // set depth function back to default
 
 			// Swap the screen buffers
 			glfwSwapBuffers(window);
@@ -314,4 +341,80 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos)
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
 {
 	camera.ProcessMouseScroll(yoffset);
+}
+
+unsigned int loadTexture(char const *path)
+{
+	unsigned int textureID;
+	glGenTextures(1, &textureID);
+
+	int width, height, nrComponents;
+	unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
+	if (data)
+	{
+		GLenum format;
+		if (nrComponents == 1)
+			format = GL_RED;
+		else if (nrComponents == 3)
+			format = GL_RGB;
+		else if (nrComponents == 4)
+			format = GL_RGBA;
+
+		glBindTexture(GL_TEXTURE_2D, textureID);
+		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		stbi_image_free(data);
+	}
+	else
+	{
+		std::cout << "Texture failed to load at path: " << path << std::endl;
+		stbi_image_free(data);
+	}
+
+	return textureID;
+}
+
+// loads a cubemap texture from 6 individual texture faces
+// order:
+// +X (right)
+// -X (left)
+// +Y (top)
+// -Y (bottom)
+// +Z (front)
+// -Z (back)
+// -------------------------------------------------------
+unsigned int loadCubemap(vector<std::string> faces)
+{
+	unsigned int textureID;
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+	int width, height, nrChannels;
+	for (unsigned int i = 0; i < faces.size(); i++)
+	{
+		unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+		if (data)
+		{
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+			stbi_image_free(data);
+		}
+		else
+		{
+			std::cout << "Cubemap texture failed to load at path: ";
+			stbi_image_free(data);
+		}
+	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+	return textureID;
 }
