@@ -221,6 +221,14 @@ int main()
 			tranformation.translate(model, 0, -1.5, -1.5);
 			tranformation.scale(model, 100, 1, 100);
 			theProgram.setMat4("model", model);
+			cube->draw();
+
+			// Ustawienie i rysowanie pod�ogi
+			model = glm::mat4(1.0f);
+
+			tranformation.translate(model, 0, -1.5, -1.5);
+			tranformation.scale(model, 100, 1, 100);
+			theProgram.setMat4("model", model);
 			floor->draw();
 
 			// Swap the screen buffers
