@@ -17,18 +17,18 @@
 
 using namespace std;
 
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
+void key_callback(GLFWwindow *window, int key, int scancode, int action, int mode)
 {
 	cout << key << endl;
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void processInput(GLFWwindow* window);
-GLuint LoadMipmapTexture(GLuint texId, const char* fname);
+void framebuffer_size_callback(GLFWwindow *window, int width, int height);
+void mouse_callback(GLFWwindow *window, double xpos, double ypos);
+void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
+void processInput(GLFWwindow *window);
+GLuint LoadMipmapTexture(GLuint texId, const char *fname);
 
 // settings
 const GLuint WIDTH = 800, HEIGHT = 600;
@@ -40,9 +40,8 @@ float lastY = HEIGHT / 2.0f;
 bool firstMouse = true;
 
 // timing
-float deltaTime = 0.0f;	// time between current frame and last frame
+float deltaTime = 0.0f; // time between current frame and last frame
 float lastFrame = 0.0f;
-
 
 int main()
 {
@@ -58,7 +57,7 @@ int main()
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 	try
 	{
-		GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "zegar", nullptr, nullptr);
+		GLFWwindow *window = glfwCreateWindow(WIDTH, HEIGHT, "zegar", nullptr, nullptr);
 		if (window == nullptr)
 			throw exception("GLFW window not created");
 		glfwMakeContextCurrent(window);
@@ -87,20 +86,20 @@ int main()
 		ShaderProgram theProgram("clock_machine.vert", "clock_machine.frag");
 
 		// Set the texture wrapping parameters
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT (usually basic wrapping method)
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // Set texture wrapping to GL_REPEAT (usually basic wrapping method)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		// Set texture filtering parameters
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		
+
 		// Create mesh
 		Mesh *cube = new Cube();
 		cube->init();
 		cube->loadTexture("wood.png");
 
-		Mesh *cylider = new Cylinder(12, 0.45, 0.55, 0);
-		cylider->init();
-		cylider->loadTexture("white_wood.png");
+		Mesh *cylinder = new Cylinder(12, 0.45, 0.55, 0);
+		cylinder->init();
+		cylinder->loadTexture("white_wood.png");
 
 		Mesh *cover = new Cover(24, 0.5, 0.6, 0.05);
 		cover->init();
@@ -111,6 +110,9 @@ int main()
 		Mesh *bell = new Cylinder(36, 0.2, 0.15, 0.5);
 		bell->init();
 		bell->loadTexture("silver_material.png");
+
+		Mesh *floor = new Cube();
+		floor->init();
 
 		// main event loop
 		while (!glfwWindowShouldClose(window))
@@ -127,7 +129,7 @@ int main()
 			// Clear the colorbuffer
 			glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			
+
 			theProgram.Use();
 
 			// pass projection matrix to shader (note that in this case it could change every frame)
@@ -138,7 +140,6 @@ int main()
 			glm::mat4 view = camera.GetViewMatrix();
 			theProgram.setMat4("view", view);
 
-
 			// Pass transformation matrices to the shader
 			theProgram.setMat4("projection", projection); // note: currently we set the projection matrix each frame, but since the projection matrix rarely changes it's often best practice to set it outside the main loop only once.
 			theProgram.setMat4("view", view);
@@ -146,7 +147,7 @@ int main()
 			// Ustawienie i rysowanie obudowy
 			Trans tranformation;
 			glm::mat4 model = glm::mat4(1.0f);
-			
+
 			// Ustawiamy obiekt
 			tranformation.translate(model, 0, 0.5, -0.5);
 			// Obracamy
@@ -159,13 +160,13 @@ int main()
 
 			//ustawienie i rysowanie cyferblatu
 			model = glm::mat4(1.0f);
-			
+
 			tranformation.translate(model, 0, 0.5, -0.5);
 			tranformation.rotate(model, 1, 0, 0, 90);
 			tranformation.scale(model, 1, 1, 1);
 
 			theProgram.setMat4("model", model);
-			cylider->draw();
+			cylinder->draw();
 
 			//ustawienie i rysowanie wskazowki 1
 			model = glm::mat4(1.0f);
@@ -211,11 +212,16 @@ int main()
 			model = glm::mat4(1.0f);
 
 			tranformation.translate(model, 0, -0.5, -0.5);
-			tranformation.scale(model, 1, 1, 1);
-
 			theProgram.setMat4("model", model);
 			cube->draw();
 
+			// Ustawienie i rysowanie pod�ogi
+			model = glm::mat4(1.0f);
+
+			tranformation.translate(model, 0, -1.5, -1.5);
+			tranformation.scale(model, 100, 1, 100);
+			theProgram.setMat4("model", model);
+			floor->draw();
 
 			// Swap the screen buffers
 			glfwSwapBuffers(window);
@@ -231,11 +237,10 @@ int main()
 	return 0;
 }
 
-
-GLuint LoadMipmapTexture(GLuint texId, const char* fname)
+GLuint LoadMipmapTexture(GLuint texId, const char *fname)
 {
 	int width, height;
-	unsigned char* image = SOIL_load_image(fname, &width, &height, 0, SOIL_LOAD_RGB);
+	unsigned char *image = SOIL_load_image(fname, &width, &height, 0, SOIL_LOAD_RGB);
 	if (image == nullptr)
 		throw exception("Failed to load texture file");
 
@@ -252,7 +257,7 @@ GLuint LoadMipmapTexture(GLuint texId, const char* fname)
 }
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
-void processInput(GLFWwindow* window)
+void processInput(GLFWwindow *window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
@@ -269,17 +274,16 @@ void processInput(GLFWwindow* window)
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
 // ---------------------------------------------------------------------------------------------
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
-	// make sure the viewport matches the new window dimensions; note that width and 
+	// make sure the viewport matches the new window dimensions; note that width and
 	// height will be significantly larger than specified on retina displays.
 	glViewport(0, 0, width, height);
 }
 
-
 // glfw: whenever the mouse moves, this callback is called
 // -------------------------------------------------------
-void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+void mouse_callback(GLFWwindow *window, double xpos, double ypos)
 {
 	if (firstMouse)
 	{
@@ -299,7 +303,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
 // ----------------------------------------------------------------------
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
 {
 	camera.ProcessMouseScroll(yoffset);
 }
