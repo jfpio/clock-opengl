@@ -8,16 +8,22 @@ void Cylinder::setVertices(std::vector<Vertex> &vertices, std::vector<GLuint> &i
 	genIndices(indices);
 }
 
-Cylinder::Cylinder(int _slices, float _radius, float _height)
+Cylinder::Cylinder(int _slices, float _radius, float _height, int _color)
 {
 	slices = _slices;
 	radius = _radius;
 	height = _height;
+	col = _color;
 }
 
 
 void Cylinder::genVertices(std::vector<Vertex> &vertices, bool isTop) {
-	glm::vec3 color = glm::vec3(0.7f, 0.1f, 0.4f);
+	glm::vec3 color = glm::vec3(0.95f, 0.0f, 0.0f);
+	if (col == 0)
+		color = glm::vec3(0.95f, 0.95f, 0.95f);
+	else 
+		color = glm::vec3(0.8f, 0.8f, 0.8f);
+
 	glm::vec3 center;
 	double y;
 

@@ -1,3 +1,4 @@
+
 #pragma once
 #define _USE_MATH_DEFINES
 
@@ -10,20 +11,21 @@
 
 
 
-class Cylinder : public Mesh
+class Cover : public Mesh
 {
 private:
 	GLuint slices;
 	GLfloat radius;
 	GLfloat height;
-	int col;//temp cylinder color 
+	GLfloat thickness;
 
-	void genVertices(std::vector<Vertex> &vertices, bool isTop);
+	void genVertices(std::vector<Vertex> &vertices);
 	void genIndices(std::vector<GLuint> &indices);
 protected:
 	virtual void setVertices(std::vector<Vertex> &vertices, std::vector<GLuint> &indices);
 
 public:
-	Cylinder(int _slices, float _radius, float _height, int _color);
+	Cover(int _slices, float _radius, float _height, float thickness);
 };
+
 
