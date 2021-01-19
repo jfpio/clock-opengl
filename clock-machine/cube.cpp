@@ -4,15 +4,15 @@ using namespace glm;
 
 void Cube::setVertices(std::vector<Vertex> &vertices, std::vector<GLuint> &indices)
 {
-	vertices.push_back(Vertex(vec3(-0.5f, -0.5f, -0.5f), vec3(1.0f, 0.0f, 0.0f), vec2()));
-	vertices.push_back(Vertex(vec3(-0.5f, 0.5f, -0.5f), vec3(1.0f, 1.0f, 0.0f), vec2()));
-	vertices.push_back(Vertex(vec3(0.5f, 0.5f, -0.5f), vec3(1.0f, 1.0f, 1.0f), vec2()));
-	vertices.push_back(Vertex(vec3(0.5f, -0.5f, -0.5f), vec3(0.0f, 0.0f, 0.0f), vec2()));
+	vertices.push_back(Vertex(vec3(-0.5f, -0.5f, -0.5f), vec3(0.5f, 0.5f, 0.5f), vec2(0.0f, 0.0f)));
+	vertices.push_back(Vertex(vec3(-0.5f, 0.5f, -0.5f), vec3(0.5f, 0.5f, 0.5f), vec2(0.0f, 1.0f)));
+	vertices.push_back(Vertex(vec3(0.5f, 0.5f, -0.5f), vec3(0.5f, 0.5f, 0.5f), vec2(1.0f, 1.0f)));
+	vertices.push_back(Vertex(vec3(0.5f, -0.5f, -0.5f), vec3(0.5f, 0.5f, 0.5f), vec2(1.0f, 0.0f)));
 
-	vertices.push_back(Vertex(vec3(-0.5f, -0.5f, 0.5f), vec3(0.9f, 0.3f, 0.8f), vec2()));
-	vertices.push_back(Vertex(vec3(-0.5f, 0.5f, 0.5f), vec3(0.4f, 0.1f, 0.3f), vec2()));
-	vertices.push_back(Vertex(vec3(0.5f, 0.5f, 0.5f), vec3(0.1f, 0.6f, 0.4f), vec2()));
-	vertices.push_back(Vertex(vec3(0.5f, -0.5f, 0.5f), vec3(0.6f, 0.3f, 0.1f), vec2()));
+	vertices.push_back(Vertex(vec3(-0.5f, -0.5f, 0.5f), vec3(0.5f, 0.5f, 0.5f), vec2(1.0f, 1.0f)));
+	vertices.push_back(Vertex(vec3(-0.5f, 0.5f, 0.5f), vec3(0.5f, 0.5f, 0.5f), vec2(1.0f, 0.0f)));
+	vertices.push_back(Vertex(vec3(0.5f, 0.5f, 0.5f), vec3(0.5f, 0.5f, 0.5f), vec2(0.0f, 0.0f)));
+	vertices.push_back(Vertex(vec3(0.5f, -0.5f, 0.5f), vec3(0.5f, 0.5f, 0.5f), vec2(0.0f, 1.0f)));
 
 	indices = {
 		0,1,2,

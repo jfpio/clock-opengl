@@ -1,5 +1,6 @@
 #include "Mesh.h"
 
+
 Mesh::Mesh(){
 	indicesNum = 0;
 	glGenVertexArrays(1, &VAO);
@@ -52,7 +53,31 @@ void Mesh::init() {
 	delete indices;
 }
 
+void Mesh::loadTexture(const char* fname)
+{
+	GLuint texId = GL_TEXTURE0;
+
+	int width, height;
+	unsigned char* image = SOIL_load_image(fname, &width, &height, 0, SOIL_LOAD_RGB);
+	if (image == nullptr)
+		throw std::exception("Wrong file name");
+
+	GLuint tmpTexture;
+	glGenTextures(1, &tmpTexture);
+
+	glActiveTexture(texId);
+	glBindTexture(GL_TEXTURE_2D, tmpTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	SOIL_free_image_data(image);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	texture = tmpTexture;
+}
+
 void Mesh::draw() const {
+	glBindTexture(GL_TEXTURE_2D, texture);
+
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, indicesNum, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);

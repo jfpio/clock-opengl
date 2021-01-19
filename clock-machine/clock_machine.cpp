@@ -85,10 +85,19 @@ int main()
 
 		// Build, compile and link shader program
 		ShaderProgram theProgram("clock_machine.vert", "clock_machine.frag");
+
+		// Set the texture wrapping parameters
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT (usually basic wrapping method)
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		// Set texture filtering parameters
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		
 		// Create mesh
 		Mesh *cube = new Cube();
 		cube->init();
+		cube->loadTexture("wood.png");
+
 		Mesh *cylider = new Cylinder(12, 0.45, 0.55, 0);
 		cylider->init();
 		Mesh *cover = new Cover(24, 0.5, 0.6, 0.05);
@@ -99,19 +108,6 @@ int main()
 
 		Mesh *bell = new Cylinder(36, 0.2, 0.15, 1);
 		bell->init();
-
-
-
-		// Set the texture wrapping parameters
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT (usually basic wrapping method)
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		// Set texture filtering parameters
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		// prepare textures
-		GLuint texture0 = LoadMipmapTexture(GL_TEXTURE0, "iipw.png");
-		GLuint texture1 = LoadMipmapTexture(GL_TEXTURE1, "weiti.png");
 
 
 		// main event loop
@@ -129,14 +125,6 @@ int main()
 			// Clear the colorbuffer
 			glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			
-			// Bind Textures using texture units
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, texture0);
-			glUniform1i(glGetUniformLocation(theProgram.get_programID(), "Texture0"), 0);
-			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, texture1);
-			glUniform1i(glGetUniformLocation(theProgram.get_programID(), "Texture1"), 0);
 			
 			theProgram.Use();
 
