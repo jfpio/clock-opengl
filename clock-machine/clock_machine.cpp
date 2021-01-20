@@ -326,10 +326,10 @@ void processInput(GLFWwindow *window)
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 
-	if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS && animationSpeed < 5)
-		animationSpeed -= 0.02;
-	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS && animationSpeed >= 0.02)
+	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS && animationSpeed < 5)
 		animationSpeed += 0.02;
+	if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS && animationSpeed >= 0.02)
+		animationSpeed -= 0.02;
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		camera.ProcessKeyboard(FORWARD, deltaTime);
