@@ -89,9 +89,14 @@ int main()
 
 		// Build, compile and link shader program
 		ShaderProgram theProgram("clock_machine.vert", "clock_machine.frag");
+		ShaderProgram lightSourceShader("clock_machine.vert", "light_source.frag");
 		ShaderProgram skyboxShader("skybox.vert", "skybox.frag");
 
 		// Create mesh
+		Mesh *light = new Cube();
+		light->init();
+		light->loadTexture("wood.png");
+
 		Mesh *cube = new Cube();
 		cube->init();
 		cube->loadTexture("wood.png");
@@ -151,23 +156,33 @@ int main()
 			glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			theProgram.Use();
+			Trans tranformation;
+			glm::mat4 model = glm::mat4(1.0f);
 
 			// pass projection matrix to shader (note that in this case it could change every frame)
 			glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
-			theProgram.setMat4("projection", projection);
 
 			// camera/view transformation
 			glm::mat4 view = camera.GetViewMatrix();
-			theProgram.setMat4("view", view);
+			
+			// Rysowanie światła
+			model = glm::mat4(1.0f);
+			tranformation.translate(model, 0.8, 0.8, 0.8);
+			tranformation.scale(model, 0.2, 0.2, 0.2);
 
-			// Pass transformation matrices to the shader
-			theProgram.setMat4("projection", projection); // note: currently we set the projection matrix each frame, but since the projection matrix rarely changes it's often best practice to set it outside the main loop only once.
+			lightSourceShader.Use();
+			lightSourceShader.setMat4("model", model);
+			lightSourceShader.setMat4("view", view);
+			lightSourceShader.setMat4("projection", projection);
+			light->draw();
+
+			theProgram.Use();
+			theProgram.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
+			theProgram.setMat4("projection", projection);
 			theProgram.setMat4("view", view);
 
 			// Ustawienie i rysowanie obudowy
-			Trans tranformation;
-			glm::mat4 model = glm::mat4(1.0f);
+			model = glm::mat4(1.0f);
 
 			// Ustawiamy obiekt
 			tranformation.translate(model, 0, 0.5, -0.5);

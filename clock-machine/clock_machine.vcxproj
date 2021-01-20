@@ -99,6 +99,7 @@
   <ItemGroup>
     <None Include="clock_machine.frag" />
     <None Include="clock_machine.vert" />
+    <None Include="light_source.frag" />
     <None Include="skybox.frag" />
     <None Include="skybox.vert" />
   </ItemGroup>
