@@ -101,7 +101,10 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="iipw.png" />
+    <Image Include="silver_material.png" />
     <Image Include="weiti.png" />
+    <Image Include="white_wood.png" />
+    <Image Include="wood.png" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cover.h" />
@@ -112,6 +115,7 @@
     <ClInclude Include="cylinder.h" />
     <ClInclude Include="trans.h" />
     <ClInclude Include="vertex.h" />
+    <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
