@@ -11,6 +11,7 @@
 #include "shprogram.h"
 #include "mesh.h"
 #include "cube.h"
+#include "floor.h"
 #include "cylinder.h"
 #include "cover.h"
 #include "cuboid.h"
@@ -102,6 +103,7 @@ int main()
 
 		Mesh *cover = new Cover(24, 0.5, 0.6, 0.05);
 		cover->init();
+		cover->loadTexture("clock.png");
 
 		Mesh *pointer = new Cuboid();
 		pointer->init();
@@ -110,8 +112,9 @@ int main()
 		bell->init();
 		bell->loadTexture("silver_material.png");
 
-		Mesh *floor = new Cube();
+		Mesh *floor = new  Floor();
 		floor->init();
+		floor->loadTexture("sand.png");
 
 		vector<std::string> faces{
 			"right.jpg",
@@ -235,7 +238,7 @@ int main()
 			tranformation.translate(model, 0, -1.5, -1.5);
 			tranformation.scale(model, 100, 1, 100);
 			theProgram.setMat4("model", model);
-			cube->draw();
+			floor->draw();
 
 			// Ustawienie i rysowanie pod�ogi
 			model = glm::mat4(1.0f);

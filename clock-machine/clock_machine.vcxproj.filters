@@ -42,6 +42,9 @@
     <ClCompile Include="trans.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="floor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="clock_machine.frag" />
@@ -67,6 +70,12 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="silver_material.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="sand.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="clock.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
@@ -96,6 +105,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="floor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
