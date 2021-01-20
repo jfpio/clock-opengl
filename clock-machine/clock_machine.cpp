@@ -19,6 +19,8 @@
 
 using namespace std;
 
+double animationSpeed = 1;
+
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mode)
 {
 	cout << key << endl;
@@ -112,7 +114,7 @@ int main()
 		bell->init();
 		bell->loadTexture("silver_material.png");
 
-		Mesh *floor = new  Floor();
+		Mesh *floor = new Floor();
 		floor->init();
 		floor->loadTexture("sand.png");
 
@@ -130,6 +132,8 @@ int main()
 
 		skyboxShader.use();
 		skyboxShader.setInt("skybox", 0);
+		Mesh *plug = new Cylinder(36, 0.08, 0.07, 1);
+		plug->init();
 
 		// main event loop
 		while (!glfwWindowShouldClose(window))
@@ -186,24 +190,46 @@ int main()
 			cylinder->draw();
 
 			//ustawienie i rysowanie wskazowki 1
-			model = glm::mat4(1.0f);
 
-			tranformation.translate(model, 0, 0.5, -0.2);
-			//tranformation.rotate(model, 1, 0, 0, 90);
-			tranformation.scale(model, 0.8, 0.8, 0.8);
+			model = glm::mat4(1.0f);
+			static GLfloat rot_angle = 0.0f;
+
+			rot_angle -= 0.12 * animationSpeed;
+			if (rot_angle <= -360)
+				rot_angle = 0.0f;
+
+			tranformation.translate(model, 0, 0.5, -0.25);
+			tranformation.rotate(model, 0, 0, 1, rot_angle);
+			tranformation.scale(model, 0.2, 0.8, 0.8);
 
 			theProgram.setMat4("model", model);
 			pointer->draw();
 
 			//ustawienie i rysowanie wskazowki 2
 			model = glm::mat4(1.0f);
+			static GLfloat rot_angle2 = 0.0f;
 
-			tranformation.translate(model, 0, 0.5, -0.2);
-			tranformation.rotate(model, 0, 0, 1, -90);
-			tranformation.scale(model, 0.5, 0.5, 0.5);
+			rot_angle2 -= 0.01 * animationSpeed;
+
+			if (rot_angle2 <= -360)
+				rot_angle2 = 0.0f;
+
+			tranformation.translate(model, 0, 0.5, -0.28);
+			tranformation.rotate(model, 0, 0, 1, rot_angle2);
+			tranformation.scale(model, 0.4, 0.6, 0.8);
 
 			theProgram.setMat4("model", model);
 			pointer->draw();
+
+			//ustawienie i rysowanie srodka cyferblatu
+			model = glm::mat4(1.0f);
+
+			tranformation.translate(model, 0, 0.5, -0.3);
+			tranformation.rotate(model, 1, 0, 0, 90);
+			tranformation.scale(model, 1, 1, 1);
+
+			theProgram.setMat4("model", model);
+			plug->draw();
 
 			//ustawienie i rysowanie dzwonka
 			model = glm::mat4(1.0f);
@@ -299,6 +325,11 @@ void processInput(GLFWwindow *window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
+
+	if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS && animationSpeed < 5)
+		animationSpeed += 0.02;
+	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS && animationSpeed >= 0.02)
+		animationSpeed -= 0.02;
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		camera.ProcessKeyboard(FORWARD, deltaTime);
