@@ -37,11 +37,11 @@ void Cylinder::genVertices(std::vector<Vertex> &vertices, bool isTop) {
 	}
 
 	//add circle center
-	vertices.push_back(Vertex(center, color, glm::vec2()));
+	vertices.push_back(Vertex(center, color, glm::vec2(0.5f,  0.5f)));
 
 	//vertices on circumference
 	for (float i = 0.0f; i < 360.0f; i += (360.0f / slices)) {
-		vertices.push_back(Vertex(glm::vec3(radius * cosf(i * M_PI/180.0), y, radius * sinf(i*M_PI/180.0)), color, glm::vec2()));
+		vertices.push_back(Vertex(glm::vec3(radius * cosf(i * M_PI/180.0), y, radius * sinf(i*M_PI/180.0)), color, glm::vec2(cosf(i * M_PI / 180.0), sinf(i*M_PI / 180.0))));
 	}
 }
 

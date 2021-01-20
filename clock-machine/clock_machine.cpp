@@ -100,15 +100,17 @@ int main()
 
 		Mesh *cylider = new Cylinder(12, 0.45, 0.55, 0);
 		cylider->init();
+		cylider->loadTexture("white_wood.png");
+
 		Mesh *cover = new Cover(24, 0.5, 0.6, 0.05);
 		cover->init();
 
 		Mesh *pointer = new Cuboid();
 		pointer->init();
 
-		Mesh *bell = new Cylinder(36, 0.2, 0.15, 1);
+		Mesh *bell = new Cylinder(36, 0.2, 0.15, 0.5);
 		bell->init();
-
+		bell->loadTexture("silver_material.png");
 
 		// main event loop
 		while (!glfwWindowShouldClose(window))

@@ -101,7 +101,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="iipw.png" />
+    <Image Include="silver_material.png" />
     <Image Include="weiti.png" />
+    <Image Include="white_wood.png" />
     <Image Include="wood.png" />
   </ItemGroup>
   <ItemGroup>

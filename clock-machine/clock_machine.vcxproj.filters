@@ -57,6 +57,12 @@
     <Image Include="wood.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="white_wood.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="silver_material.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shprogram.h">
