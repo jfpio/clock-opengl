@@ -89,6 +89,7 @@
     <ClCompile Include="cover.cpp" />
     <ClCompile Include="cube.cpp" />
     <ClCompile Include="cuboid.cpp" />
+    <ClCompile Include="floor.cpp" />
     <ClCompile Include="mesh.cpp" />
     <ClCompile Include="shprogram.cpp" />
     <ClCompile Include="cylinder.cpp" />
@@ -98,9 +99,13 @@
   <ItemGroup>
     <None Include="clock_machine.frag" />
     <None Include="clock_machine.vert" />
+    <None Include="skybox.frag" />
+    <None Include="skybox.vert" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="clock.png" />
     <Image Include="iipw.png" />
+    <Image Include="sand.png" />
     <Image Include="silver_material.png" />
     <Image Include="weiti.png" />
     <Image Include="white_wood.png" />
@@ -110,6 +115,7 @@
     <ClInclude Include="cover.h" />
     <ClInclude Include="cube.h" />
     <ClInclude Include="cuboid.h" />
+    <ClInclude Include="floor.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="shprogram.h" />
     <ClInclude Include="cylinder.h" />
