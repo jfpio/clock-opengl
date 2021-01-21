@@ -89,16 +89,21 @@
     <ClCompile Include="cover.cpp" />
     <ClCompile Include="cube.cpp" />
     <ClCompile Include="cuboid.cpp" />
+    <ClCompile Include="drawer.cpp" />
+    <ClCompile Include="environment.cpp" />
     <ClCompile Include="floor.cpp" />
+    <ClCompile Include="input.cpp" />
     <ClCompile Include="mesh.cpp" />
     <ClCompile Include="shprogram.cpp" />
     <ClCompile Include="cylinder.cpp" />
     <ClCompile Include="trans.cpp" />
     <ClCompile Include="vertex.cpp" />
+    <ClCompile Include="worldCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="clock_machine.frag" />
     <None Include="clock_machine.vert" />
+    <None Include="light_source.frag" />
     <None Include="skybox.frag" />
     <None Include="skybox.vert" />
   </ItemGroup>
@@ -115,13 +120,17 @@
     <ClInclude Include="cover.h" />
     <ClInclude Include="cube.h" />
     <ClInclude Include="cuboid.h" />
+    <ClInclude Include="drawer.h" />
+    <ClInclude Include="environment.h" />
     <ClInclude Include="floor.h" />
+    <ClInclude Include="input.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="shprogram.h" />
     <ClInclude Include="cylinder.h" />
     <ClInclude Include="trans.h" />
     <ClInclude Include="vertex.h" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="worldCamera.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
