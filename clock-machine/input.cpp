@@ -17,6 +17,13 @@ void Input::processAnimationInput(GLFWwindow *window, double *animationSpeed) {
 	*animationSpeed = animationSpeedValue;
 }
 
+void Input::processLightInput(GLFWwindow *window, double *brightness){
+	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS && *brightness < 1)
+		*brightness += 0.01;
+	if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS && *brightness >= 0)
+		*brightness -= 0.01;
+};
+
 void Input::processCameraInput(GLFWwindow *window, WorldCamera *worldCamera){
 		
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)

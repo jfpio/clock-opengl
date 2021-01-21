@@ -1,13 +1,10 @@
 #define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <SOIL.h>
-#include <stb_image.h>
 #include <iostream>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <learnopengl/camera.h>
 #include "shprogram.h"
 #include "mesh.h"
 #include "cube.h"
@@ -24,6 +21,7 @@ using namespace std;
 
 // settings
 double animationSpeed = 1;
+double brightness = 0.8;
 const GLuint WIDTH = 800, HEIGHT = 600;
 
 Input *input = new Input();
@@ -122,6 +120,7 @@ int main()
 
 			input->processCommonInput(window);
 			input->processAnimationInput(window, &animationSpeed);
+			input->processLightInput(window, &brightness);
 			input->processCameraInput(window, worldCamera);
 
 			// Clear the colorbuffer
@@ -149,7 +148,7 @@ int main()
 			light->draw();
 
 			theProgram.Use();
-			theProgram.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
+			theProgram.setVec3("lightColor", glm::vec3(brightness));
 			theProgram.setMat4("projection", projection);
 			theProgram.setMat4("view", view);
 

@@ -58,13 +58,9 @@
   <ItemGroup>
     <None Include="clock_machine.frag" />
     <None Include="clock_machine.vert" />
-    <None Include="skybox.frag">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="skybox.vert">
-      <Filter>Source Files</Filter>
-    </None>
     <None Include="light_source.frag" />
+    <None Include="skybox.frag" />
+    <None Include="skybox.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="iipw.png">
