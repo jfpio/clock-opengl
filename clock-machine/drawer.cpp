@@ -59,7 +59,7 @@ void Drawer::drawMinutePointer(Mesh *pointer, double *animationSpeed, static GLf
 	if (*pointerAngel <= -360)
 		*pointerAngel = 0.0f;
 
-	tranformation.translate(model, 0, 0.5, -0.25);
+	tranformation.translate(model, 0, 0.5, -0.22);
 	tranformation.rotate(model, 0, 0, 1, *pointerAngel);
 	tranformation.scale(model, 0.2, 0.8, 0.8);
 
@@ -76,7 +76,7 @@ void Drawer::drawHourPointer(Mesh *pointer, double *animationSpeed, static GLflo
 	if (*pointerAngel <= -360)
 		*pointerAngel = 0.0f;
 
-	tranformation.translate(model, 0, 0.5, -0.28);
+	tranformation.translate(model, 0, 0.5, -0.20);
 	tranformation.rotate(model, 0, 0, 1, *pointerAngel);
 	tranformation.scale(model, 0.4, 0.6, 0.8);
 
