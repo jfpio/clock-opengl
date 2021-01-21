@@ -16,11 +16,14 @@
 #include "environment.h"
 #include "input.h"
 #include "worldCamera.h"
+#include "drawer.h"
 
 using namespace std;
 
 // settings
 double animationSpeed = 1;
+static GLfloat minutePointerAngel = 0;
+static GLfloat hourPointerAngel = 0;
 double brightness = 0.8;
 const GLuint WIDTH = 800, HEIGHT = 600;
 
@@ -67,15 +70,9 @@ int main()
 		glGetIntegerv(GL_MAX_TEXTURE_COORDS, &nrAttributes);
 		cout << "Max texture coords allowed: " << nrAttributes << std::endl;
 
-		// Build, compile and link shader program
-		ShaderProgram theProgram("clock_machine.vert", "clock_machine.frag");
-		ShaderProgram lightSourceShader("clock_machine.vert", "light_source.frag");
-		ShaderProgram skyboxShader("skybox.vert", "skybox.frag");
-
-		// Create mesh
-		Mesh *light = new Cube();
-		light->init();
-		light->loadTexture("wood.png");
+		Drawer *drawer = new Drawer();
+		
+		Environment *environment = new Environment();
 
 		Mesh *cube = new Cube();
 		cube->init();
@@ -84,9 +81,9 @@ int main()
 		Mesh *skybox = new Cube();
 		skybox->init();
 
-		Mesh *cylinder = new Cylinder(12, 0.45, 0.55, 0);
-		cylinder->init();
-		cylinder->loadTexture("white_wood.png");
+		Mesh *frontOfClock = new Cylinder(12, 0.45, 0.55, 0);
+		frontOfClock->init();
+		frontOfClock->loadTexture("white_wood.png");
 
 		Mesh *cover = new Cover(24, 0.5, 0.6, 0.05);
 		cover->init();
@@ -103,10 +100,6 @@ int main()
 		floor->init();
 		floor->loadTexture("sand.png");
 
-		Environment *environment =  new Environment();
-
-		skyboxShader.use();
-		skyboxShader.setInt("skybox", 0);
 		Mesh *plug = new Cylinder(36, 0.08, 0.07, 1);
 		plug->init();
 
@@ -127,151 +120,27 @@ int main()
 			glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			Trans tranformation;
-			glm::mat4 model = glm::mat4(1.0f);
-
-			// pass projection matrix to shader (note that in this case it could change every frame)
+			//settings
 			glm::mat4 projection = glm::perspective(glm::radians(worldCamera->camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
-
-			// camera/view transformation
 			glm::mat4 view = worldCamera->camera.GetViewMatrix();
 			
-			// Rysowanie światła
-			model = glm::mat4(1.0f);
-			tranformation.translate(model, 0.8, 0.8, 0.8);
-			tranformation.scale(model, 0.2, 0.2, 0.2);
+			drawer->useCommonShader(view, projection, brightness);
+			
+			drawer->drawCover(cover);
+			drawer->drawFrontOfClock(frontOfClock);
+			drawer->drawMinutePointer(pointer, &animationSpeed, &minutePointerAngel);
+			drawer->drawHourPointer(pointer, &animationSpeed, &hourPointerAngel);
+			drawer->drawPlug(plug);
+			drawer->drawFirstBell(bell);
+			drawer->drawSecondBell(bell);
+			drawer->drawCube(cube);
+			drawer->drawFloor(floor);
 
-			lightSourceShader.Use();
-			lightSourceShader.setMat4("model", model);
-			lightSourceShader.setMat4("view", view);
-			lightSourceShader.setMat4("projection", projection);
-			light->draw();
-
-			theProgram.Use();
-			theProgram.setVec3("lightColor", glm::vec3(brightness));
-			theProgram.setMat4("projection", projection);
-			theProgram.setMat4("view", view);
-
-			// Ustawienie i rysowanie obudowy
-			model = glm::mat4(1.0f);
-
-			// Ustawiamy obiekt
-			tranformation.translate(model, 0, 0.5, -0.5);
-			// Obracamy
-			tranformation.rotate(model, 1, 0, 0, 90);
-			// Skalujemy
-			tranformation.scale(model, 1, 1, 1);
-
-			theProgram.setMat4("model", model);
-			cover->draw();
-
-			//ustawienie i rysowanie cyferblatu
-			model = glm::mat4(1.0f);
-
-			tranformation.translate(model, 0, 0.5, -0.5);
-			tranformation.rotate(model, 1, 0, 0, 90);
-			tranformation.scale(model, 1, 1, 1);
-
-			theProgram.setMat4("model", model);
-			cylinder->draw();
-
-			//ustawienie i rysowanie wskazowki 1
-
-			model = glm::mat4(1.0f);
-			static GLfloat rot_angle = 0.0f;
-
-			rot_angle -= 0.12 * animationSpeed;
-			if (rot_angle <= -360)
-				rot_angle = 0.0f;
-
-			tranformation.translate(model, 0, 0.5, -0.25);
-			tranformation.rotate(model, 0, 0, 1, rot_angle);
-			tranformation.scale(model, 0.2, 0.8, 0.8);
-
-			theProgram.setMat4("model", model);
-			pointer->draw();
-
-			//ustawienie i rysowanie wskazowki 2
-			model = glm::mat4(1.0f);
-			static GLfloat rot_angle2 = 0.0f;
-
-			rot_angle2 -= 0.01 * animationSpeed;
-
-			if (rot_angle2 <= -360)
-				rot_angle2 = 0.0f;
-
-			tranformation.translate(model, 0, 0.5, -0.28);
-			tranformation.rotate(model, 0, 0, 1, rot_angle2);
-			tranformation.scale(model, 0.4, 0.6, 0.8);
-
-			theProgram.setMat4("model", model);
-			pointer->draw();
-
-			//ustawienie i rysowanie srodka cyferblatu
-			model = glm::mat4(1.0f);
-
-			tranformation.translate(model, 0, 0.5, -0.3);
-			tranformation.rotate(model, 1, 0, 0, 90);
-			tranformation.scale(model, 1, 1, 1);
-
-			theProgram.setMat4("model", model);
-			plug->draw();
-
-			//ustawienie i rysowanie dzwonka
-			model = glm::mat4(1.0f);
-
-			tranformation.translate(model, 0.25, 1, -0.5);
-			tranformation.rotate(model, 0, 0, 1, -30);
-			tranformation.scale(model, 1, 1, 1);
-
-			theProgram.setMat4("model", model);
-			bell->draw();
-
-			//ustawienie i rysowanie dzwonka 2
-			model = glm::mat4(1.0f);
-
-			tranformation.translate(model, -0.25, 1, -0.5);
-			tranformation.rotate(model, 0, 0, 1, 30);
-			tranformation.scale(model, 1, 1, 1);
-
-			theProgram.setMat4("model", model);
-			bell->draw();
-
-			//ustawienie i rysowanie szafki
-			model = glm::mat4(1.0f);
-
-			tranformation.translate(model, 0, -0.5, -0.5);
-			theProgram.setMat4("model", model);
-			cube->draw();
-
-			// Ustawienie i rysowanie podłogi
-			model = glm::mat4(1.0f);
-
-			tranformation.translate(model, 0, -1.5, -1.5);
-			tranformation.scale(model, 100, 1, 100);
-			theProgram.setMat4("model", model);
-			floor->draw();
-
-			// Ustawienie i rysowanie pod�ogi
-			model = glm::mat4(1.0f);
-
-			tranformation.translate(model, 0, -1.5, -1.5);
-			tranformation.scale(model, 100, 1, 100);
-			theProgram.setMat4("model", model);
-			floor->draw();
-
-			// draw skybox as last
-			glDepthFunc(GL_LEQUAL); // change depth function so depth test passes when values are equal to depth buffer's content
-			skyboxShader.use();
 			view = glm::mat4(glm::mat3(worldCamera->camera.GetViewMatrix())); // remove translation from the view matrix
-			skyboxShader.setMat4("view", view);
-			skyboxShader.setMat4("projection", projection);
 
-			// skybox cube
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_CUBE_MAP, environment->getTexture());
-			skybox->draw();
-			glDepthFunc(GL_LESS); // set depth function back to default
+			drawer->useSkyboxShader(view, projection);
+
+			drawer->drawSkybox(skybox, environment);
 
 			// Swap the screen buffers
 			glfwSwapBuffers(window);
