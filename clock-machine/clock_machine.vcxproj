@@ -89,6 +89,7 @@
     <ClCompile Include="cover.cpp" />
     <ClCompile Include="cube.cpp" />
     <ClCompile Include="cuboid.cpp" />
+    <ClCompile Include="environment.cpp" />
     <ClCompile Include="floor.cpp" />
     <ClCompile Include="mesh.cpp" />
     <ClCompile Include="shprogram.cpp" />
@@ -116,6 +117,7 @@
     <ClInclude Include="cover.h" />
     <ClInclude Include="cube.h" />
     <ClInclude Include="cuboid.h" />
+    <ClInclude Include="environment.h" />
     <ClInclude Include="floor.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="shprogram.h" />
