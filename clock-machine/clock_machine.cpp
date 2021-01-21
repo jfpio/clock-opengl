@@ -100,7 +100,7 @@ int main()
 		floor->init();
 		floor->loadTexture("sand.png");
 
-		Mesh *plug = new Cylinder(36, 0.08, 0.07, 1);
+		Mesh *plug = new Cylinder(36, 0.08, 0.2, 1);
 		plug->init();
 
 		// main event loop

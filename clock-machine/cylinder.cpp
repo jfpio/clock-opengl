@@ -37,7 +37,7 @@ void Cylinder::genVertices(std::vector<Vertex> &vertices, bool isTop) {
 	}
 
 	//add circle center
-	vertices.push_back(Vertex(center, color, glm::vec2(0.5f,  0.5f)));
+	vertices.push_back(Vertex(glm::vec3(0.0, y, 0.0), color, glm::vec2(0.5f,  0.5f)));
 
 	//vertices on circumference
 	for (float i = 0.0f; i < 360.0f; i += (360.0f / slices)) {
@@ -47,7 +47,7 @@ void Cylinder::genVertices(std::vector<Vertex> &vertices, bool isTop) {
 
 void Cylinder::genIndices(std::vector<GLuint> &indices) {
 
-	//top circle divided on triangular slices
+	//top circle divided into triangular slices
 	for (unsigned int i = 0; i < slices; i++) {
 		indices.push_back(0);
 		indices.push_back(i + 1);
@@ -75,4 +75,12 @@ void Cylinder::genIndices(std::vector<GLuint> &indices) {
 		indices.push_back(i + 1);
 		indices.push_back(i + slices + 2);
 	}
+
+	indices.push_back(1);
+	indices.push_back(2* slices -1);
+	indices.push_back(slices + 2);
+
+	indices.push_back(slices);
+	indices.push_back(1);
+	indices.push_back(2 * slices - 1);
 }
