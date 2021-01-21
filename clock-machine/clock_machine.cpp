@@ -18,33 +18,23 @@
 #include "trans.h"
 #include "environment.h"
 #include "input.h"
+#include "worldCamera.h"
 
 using namespace std;
 
+// settings
 double animationSpeed = 1;
+const GLuint WIDTH = 800, HEIGHT = 600;
 
 Input *input = new Input();
+WorldCamera *worldCamera = new WorldCamera(WIDTH, HEIGHT);
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void mouse_callback(GLFWwindow *window, double xpos, double ypos);
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
 
-// settings
-const GLuint WIDTH = 800, HEIGHT = 600;
-
-// camera
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
-float lastX = WIDTH / 2.0f;
-float lastY = HEIGHT / 2.0f;
-bool firstMouse = true;
-
-// timing
-float deltaTime = 0.0f; // time between current frame and last frame
-float lastFrame = 0.0f;
-
 int main()
 {
-
 	if (glfwInit() != GL_TRUE)
 	{
 		cout << "GLFW initialization failed" << endl;
@@ -52,21 +42,19 @@ int main()
 	}
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 	try
 	{
 		GLFWwindow *window = glfwCreateWindow(WIDTH, HEIGHT, "zegar", nullptr, nullptr);
-		if (window == nullptr)
-			throw exception("GLFW window not created");
+		if (window == nullptr) 	throw exception("GLFW window not created");
+
 		glfwMakeContextCurrent(window);
 		glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 		glfwSetCursorPosCallback(window, mouse_callback);
 		glfwSetScrollCallback(window, scroll_callback);
 
 		glewExperimental = GL_TRUE;
-		if (glewInit() != GLEW_OK)
-			throw exception("GLEW Initialization failed");
+		if (glewInit() != GLEW_OK) 	throw exception("GLEW Initialization failed");
 
 		glEnable(GL_DEPTH_TEST);
 		// tell GLFW to capture our mouse
@@ -118,8 +106,6 @@ int main()
 		floor->loadTexture("sand.png");
 
 		Environment *environment =  new Environment();
-		// shader configuration
-		// --------------------
 
 		skyboxShader.use();
 		skyboxShader.setInt("skybox", 0);
@@ -131,12 +117,12 @@ int main()
 		{
 			// per-frame time logic
 			float currentFrame = glfwGetTime();
-			deltaTime = currentFrame - lastFrame;
-			lastFrame = currentFrame;
+			worldCamera->setDeltaTime(currentFrame);
+			worldCamera->setLastFrame(currentFrame);
 
 			input->processCommonInput(window);
 			input->processAnimationInput(window, &animationSpeed);
-			input->processCameraInput(window, &camera, deltaTime);
+			input->processCameraInput(window, worldCamera);
 
 			// Clear the colorbuffer
 			glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
@@ -146,10 +132,10 @@ int main()
 			glm::mat4 model = glm::mat4(1.0f);
 
 			// pass projection matrix to shader (note that in this case it could change every frame)
-			glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
+			glm::mat4 projection = glm::perspective(glm::radians(worldCamera->camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
 
 			// camera/view transformation
-			glm::mat4 view = camera.GetViewMatrix();
+			glm::mat4 view = worldCamera->camera.GetViewMatrix();
 			
 			// Rysowanie światła
 			model = glm::mat4(1.0f);
@@ -278,7 +264,7 @@ int main()
 			// draw skybox as last
 			glDepthFunc(GL_LEQUAL); // change depth function so depth test passes when values are equal to depth buffer's content
 			skyboxShader.use();
-			view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
+			view = glm::mat4(glm::mat3(worldCamera->camera.GetViewMatrix())); // remove translation from the view matrix
 			skyboxShader.setMat4("view", view);
 			skyboxShader.setMat4("projection", projection);
 
@@ -314,24 +300,27 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 // glfw: whenever the mouse moves, this callback is called
 // -------------------------------------------------------
 void mouse_callback(GLFWwindow *window, double xpos, double ypos){
-	if (firstMouse){
-		lastX = xpos;
-		lastY = ypos;
-		firstMouse = false;
+	if (worldCamera->getIsFirstMove()) {
+		worldCamera->setLastX(xpos);
+		worldCamera->setLastY(ypos);
+		worldCamera->setIsFirstMove(false);
 	}
+
+	float lastX = worldCamera->getLastX();
+	float lastY = worldCamera->getLastY();
 
 	float xoffset = xpos - lastX;
 	float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
 
-	lastX = xpos;
-	lastY = ypos;
+	worldCamera->setLastX(xpos);
+	worldCamera->setLastY(ypos);
 
-	camera.ProcessMouseMovement(xoffset, yoffset);
+	worldCamera->camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
 // ----------------------------------------------------------------------
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
 {
-	camera.ProcessMouseScroll(yoffset);
+	worldCamera->camera.ProcessMouseScroll(yoffset);
 }

@@ -17,14 +17,14 @@ void Input::processAnimationInput(GLFWwindow *window, double *animationSpeed) {
 	*animationSpeed = animationSpeedValue;
 }
 
-void Input::processCameraInput(GLFWwindow *window, Camera *camera, float deltaTime){
-	
+void Input::processCameraInput(GLFWwindow *window, WorldCamera *worldCamera){
+		
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		camera->ProcessKeyboard(FORWARD, deltaTime);
+		worldCamera->camera.ProcessKeyboard(FORWARD, worldCamera->deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		camera->ProcessKeyboard(BACKWARD, deltaTime);
+		worldCamera->camera.ProcessKeyboard(BACKWARD, worldCamera->deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		camera->ProcessKeyboard(LEFT, deltaTime);
+		worldCamera->camera.ProcessKeyboard(LEFT, worldCamera->deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		camera->ProcessKeyboard(RIGHT, deltaTime);
+		worldCamera->camera.ProcessKeyboard(RIGHT, worldCamera->deltaTime);
 };

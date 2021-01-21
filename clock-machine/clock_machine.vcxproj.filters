@@ -51,6 +51,9 @@
     <ClCompile Include="input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="worldCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="clock_machine.frag" />
@@ -121,6 +124,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="input.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="worldCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
