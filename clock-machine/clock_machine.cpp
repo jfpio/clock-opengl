@@ -17,23 +17,17 @@
 #include "cuboid.h"
 #include "trans.h"
 #include "environment.h"
+#include "input.h"
 
 using namespace std;
 
 double animationSpeed = 1;
 
-void key_callback(GLFWwindow *window, int key, int scancode, int action, int mode)
-{
-	cout << key << endl;
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GL_TRUE);
-}
+Input *input = new Input();
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void mouse_callback(GLFWwindow *window, double xpos, double ypos);
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
-void processInput(GLFWwindow *window);
-GLuint LoadMipmapTexture(GLuint texId, const char *fname);
 
 // settings
 const GLuint WIDTH = 800, HEIGHT = 600;
@@ -140,9 +134,9 @@ int main()
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
 
-			// input
-			// -----
-			processInput(window);
+			input->processCommonInput(window);
+			input->processAnimationInput(window, &animationSpeed);
+			input->processCameraInput(window, &camera, deltaTime);
 
 			// Clear the colorbuffer
 			glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
@@ -308,46 +302,6 @@ int main()
 	return 0;
 }
 
-GLuint LoadMipmapTexture(GLuint texId, const char *fname)
-{
-	int width, height;
-	unsigned char *image = SOIL_load_image(fname, &width, &height, 0, SOIL_LOAD_RGB);
-	if (image == nullptr)
-		throw exception("Failed to load texture file");
-
-	GLuint texture;
-	glGenTextures(1, &texture);
-
-	glActiveTexture(texId);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-	glGenerateMipmap(GL_TEXTURE_2D);
-	SOIL_free_image_data(image);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	return texture;
-}
-// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
-// ---------------------------------------------------------------------------------------------------------
-void processInput(GLFWwindow *window)
-{
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, true);
-
-	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS && animationSpeed < 5)
-		animationSpeed += 0.02;
-	if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS && animationSpeed >= 0.02)
-		animationSpeed -= 0.02;
-
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		camera.ProcessKeyboard(FORWARD, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		camera.ProcessKeyboard(BACKWARD, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		camera.ProcessKeyboard(LEFT, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		camera.ProcessKeyboard(RIGHT, deltaTime);
-}
-
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
 // ---------------------------------------------------------------------------------------------
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
@@ -359,10 +313,8 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 
 // glfw: whenever the mouse moves, this callback is called
 // -------------------------------------------------------
-void mouse_callback(GLFWwindow *window, double xpos, double ypos)
-{
-	if (firstMouse)
-	{
+void mouse_callback(GLFWwindow *window, double xpos, double ypos){
+	if (firstMouse){
 		lastX = xpos;
 		lastY = ypos;
 		firstMouse = false;
