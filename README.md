@@ -31,6 +31,7 @@ Członkowie zespołu:
 * WASD ruch
 * Myszka obrót
 * Scroll przybliżanie
+* Esc wyjście z animacji
 
 
 ## Szkic modelowanego obiektu
