@@ -19,7 +19,7 @@ Członkowie zespołu:
 
 ## Zaimplementowane funkcjonalności
 1.  Zegar z obracającymi się wskazówkami
-2.  Oteskturowanie elementów
+2.  Oteskturowanie elementów sceny
 3.  Stworzenie otoczenia (skybox)
 4.  Oświetlenie z możliwością zmiany jasności
 5.  Poruszająca się kamera
