@@ -38,6 +38,11 @@ Członkowie zespołu:
 ![alt text](https://preview.free3d.com/img/2019/05/2174906136786896580/zfmgurq1-900.jpg)
 
 
+## Screeny zamodelowanej sceny
+
+
+
+
 
 
 
