@@ -25,6 +25,14 @@ Członkowie zespołu:
 5.  Poruszająca się kamera
 
 
+## Sterowanie
+* X Y animacja (przyspieszanie i spowalnianie wskazówek zegara)
+* V C zmiana jasności światła
+* WASD ruch
+* Myszka obrót
+* Scroll przybliżanie
+
+
 ## Szkic modelowanego obiektu
 
 ![alt text](https://preview.free3d.com/img/2019/05/2174906136786896580/zfmgurq1-900.jpg)
