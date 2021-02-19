@@ -1,45 +1,22 @@
-# GKOM projekt
+# GKOM Clock OpenGL project 
+## Usage
+Open in Visual Studio and run project
 
-Model zegara wykonany w ramach projektu z przedmiotu GKOM.
-
-## Technologia
-
-Model został utworzony przy użyciu OpenGL.
-
-## Zespół
-
-Zespół 101.
-
-Członkowie zespołu:
-1. Wojciech Moczydłowski
-2. Jan Piotrowski
-3. Paweł Maśluch
-4. Patryk Dobrowolski
-
-
-## Zaimplementowane funkcjonalności
-1.  Zegar z obracającymi się wskazówkami
-2.  Oteskturowanie elementów sceny
-3.  Stworzenie otoczenia (skybox)
-4.  Oświetlenie z możliwością zmiany jasności
-5.  Poruszająca się kamera
+## Implemented functionality 
+1.  The clock with moving clock hands
+2.  Textured clock and area
+3.  Skybox
+4.  Lighting
+5.  Moving camera
 
 
 ## Sterowanie
-* X Y animacja (przyspieszanie i spowalnianie wskazówek zegara)
-* V C zmiana jasności światła
-* WASD ruch
-* Myszka obrót
-* Scroll przybliżanie
-* Esc wyjście z animacji
+* X Y - speed of clock hands
+* V C - light intensity
+* WASD, mouse - camera move
+* Esc exit
 
-
-## Szkic modelowanego obiektu
-
-![alt text](https://preview.free3d.com/img/2019/05/2174906136786896580/zfmgurq1-900.jpg)
-
-
-## Screeny zamodelowanej sceny
+## Screens
 
 ![141608476_2821655468084557_4490625424785629783_n](/uploads/46f8143f5e569c719ded2f312ca899c8/141608476_2821655468084557_4490625424785629783_n.png)
 
